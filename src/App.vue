@@ -1,13 +1,18 @@
 <template>
-  <div id="app">
-    <div id="nav">
+  <main id="app">
+    <nav
+      v-if="false"
+      id="nav"
+      class="grey accent-4"
+    >
       <router-link to="/">Home</router-link>
-    </div>
+    </nav>
     <router-view/>
-  </div>
+  </main>
 </template>
-
 <style lang="scss">
+  @import '~materialize-css/dist/css/materialize.min.css';
+
   * {
     padding: 0;
     margin: 0;
@@ -25,18 +30,46 @@
     justify-content: stretch;
     width: 100%;
     height: 100vh;
-  }
+    overflow:hidden;
 
-  #nav {
-    padding: 30px;
+    #nav {
+      display: flex;
+      padding-left: 20px;
 
-    a {
-      font-weight: bold;
-      color: #2c3e50;
+      a {
+        font-weight: bold;
 
-      &.router-link-exact-active {
-        color: #42b983;
+        &.router-link-exact-active {
+          color: white;
+
+          &:hover {
+            color: grey;
+            transition: .7s ease;
+          }
+        }
       }
     }
+  }
+
+  .p-2 {
+    padding: 2rem;
+  }
+
+  .p-3 {
+    padding: 3rem;
+  }
+
+  .mt-1 {
+    margin-top: 1rem;
+  }
+
+  .mt-2 {
+    margin-top: 2rem;
+  }
+  .mb-2 {
+    margin-bottom: 2rem;
+  }
+  .mb-1 {
+    margin-bottom: 1rem;
   }
 </style>
