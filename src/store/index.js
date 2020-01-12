@@ -17,6 +17,19 @@ export default new Vuex.Store({
     },
     emitCloseDetails (state) {
       state.isOpenDetails = false
+    },
+    emitDeleteWeatherData (state) {
+      state.weatherData = null
+    },
+    changeWeather (state, data) {
+      state.weatherData[data[1]] = data[0]
+    },
+    setLocalStorageData (state, StorageData) {
+      console.log('StorageData', StorageData)
+      state.weatherData = StorageData
+    },
+    deleteCity (state, index) {
+      state.weatherData[index] = null
     }
   },
   actions: {

@@ -4,10 +4,19 @@
     style="display: flex; justify-content: center; align-items: center;"
   >
     <div class="input-field">
-      <input id="last_name" type="text" class="validate">
+      <input
+        v-model="city"
+        id="last_name"
+        type="text"
+        class="validate"
+        @keyup.enter="emitCity"
+      >
       <label for="last_name">City</label>
     </div>
-    <button class="btn waves-effect waves-light ml-2" type="submit" name="action">
+    <button
+      @click.prevent="emitCity"
+      class="btn waves-effect waves-light ml-2"
+    >
       +
     </button>
   </div>
@@ -15,10 +24,21 @@
 
 <script>
 export default {
-  name: 'addCity'
+  name: 'addCity',
+  data: () => ({
+    city: ''
+  }),
+  methods: {
+    emitCity () {
+      this.$emit('addCity', this.city)
+      this.city = ''
+    }
+  }
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+  #last_name {
+    color: white;
+  }
 </style>

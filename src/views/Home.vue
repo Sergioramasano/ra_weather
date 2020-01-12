@@ -4,11 +4,14 @@
     :style="{ 'background-image': `url(${require('../assets/sky.jpeg')})`}"
   >
     <template v-if="!detalization">
-    <addCity/>
-    <div class="row p-2">
+    <addCity @addCity="addCity"/>
+    <div class="row p-2 cards">
       <card
+        v-for="(item, i) of weatherData"
+        :key="item.name"
         @openDetails="openDetails"
         @reload="reloadCityWeather"
+        :index="i"
         :weatherData="weatherData"
       />
     </div>
@@ -53,6 +56,15 @@ export default {
           this.$store.commit('setWeather', response.data)
         })
     },
+    reloadWeatherByCityName (i) {
+      this.axios
+        .get(`http://api.openweathermap.org/data/2.5/weather?q=${this.cityName}&APPID=89131358011ec8066582be44f133475a&lang=ru`)
+        .then(response => {
+          this.$store.commit('changeWeather', [response.data, i])
+        }).then(() => {
+          this.writeToStorage()
+        })
+    },
     getWeatherByGeo () {
       this.axios
         .get(`http://api.openweathermap.org/data/2.5/weather?lat=${this.lat}&lon=${this.lon}&APPID=89131358011ec8066582be44f133475a&lang=ru`)
@@ -71,14 +83,36 @@ export default {
     getUserLocation () {
       navigator.geolocation.watchPosition(this.setLocation)
     },
-    reloadCityWeather (name) {
-      this.cityName = name
+    reloadCityWeather (data) {
+      this.cityName = data[0]
+      this.reloadWeatherByCityName(data[1])
+    },
+    addCity (city) {
+      this.cityName = city
       this.getWeatherByCityName()
+      console.log(this.weatherData)
+    },
+    writeToStorage () {
+      localStorage.clear()
+      let cities = JSON.stringify(this.weatherData)
+      console.log('sss', cities)
+      localStorage.setItem('cities', cities)
+    }
+  },
+  beforeCreate () {
+    this.$store.commit('emitDeleteWeatherData')
+    if (localStorage.getItem('cities')) {
+      let cities = JSON.parse(localStorage.getItem('cities'))
+      console.log('bef', cities)
+      this.$store.commit('setLocalStorageData', cities)
     }
   },
   created () {
     this.getUserLocation()
     // this.getWeatherByCityName()
+  },
+  beforeDestroy () {
+    this.writeToStorage()
   }
 }
 </script>
@@ -89,9 +123,10 @@ export default {
     overflov-y: auto;
     background-size: 100% 100%;
     background-repeat: no-repeat;
-
-    #last_name {
-      color: white;
+    .cards{
+      height: 500px;
+      padding-bottom: 100px;
+      overflow-y: auto;
     }
   }
 </style>
