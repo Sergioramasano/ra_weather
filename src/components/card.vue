@@ -2,10 +2,10 @@
   <div class="col s12 m3">
     <div class="card">
       <div class="card-image blue">
-        <img :src="`http://openweathermap.org/img/wn/${this.cities[0].weather[0].icon}@2x.png`" alt="weatherIcon">
-        <span class="card-title">{{cities[0].name}}</span>
+        <img :src="`http://openweathermap.org/img/wn/${this.weatherData[0].weather[0].icon}@2x.png`" alt="weatherIcon">
+        <span class="card-title">{{weatherData[0].name}}</span>
         <a
-          @click.prevent="reload(cities[0].name)"
+          @click.prevent="reload(weatherData[0].name)"
           class="btn-floating halfway-fab waves-effect waves-light red reload">
           &#8634;
         </a>
@@ -13,27 +13,27 @@
       <div class="card-content">
         <div class="mb-1">
           <p>
-            <span>description:</span>
-            <b>{{cities[0].weather[0].description}}</b>
+            <span>Описание:</span>
+            <b>{{weatherData[0].weather[0].description}}</b>
           </p>
           <p>
-            <span>Temp.:</span>
-            <b>{{Math.ceil(cities[0].main.temp - 273)}}℃</b>
+            <span>Температура.:</span>
+            <b>{{Math.ceil(weatherData[0].main.temp - 273)}}℃</b>
           </p>
           <p>
-            <span>Min temp.:</span>
-            <b>{{Math.ceil(cities[0].main.temp_min-273)}}℃</b>
+            <span>Минимальная t:</span>
+            <b>{{Math.ceil(weatherData[0].main.temp_min-273)}}℃</b>
           </p>
           <p>
-            <span>Max temp.:</span>
-            <b>{{Math.ceil(cities[0].main.temp_max-273)}}℃</b>
+            <span>Максимальная t:</span>
+            <b>{{Math.ceil(weatherData[0].main.temp_max-273)}}℃</b>
           </p>
         </div>
         <a
           @click="emitOpenDetails"
           class="waves-effect waves-light btn-small more"
         >
-          Details...
+          Подробнее...
         </a>
       </div>
     </div>
@@ -44,7 +44,7 @@
 export default {
   name: 'card',
   props: {
-    cities: Array
+    weatherData: Array
   },
   data: () => ({
     iconUrl: ''
@@ -54,7 +54,8 @@ export default {
       this.$emit('reload', name)
     },
     emitOpenDetails () {
-      this.$emit('emitOpenDetails', this.cities[0].name)
+      this.$store.commit('emitOpenDetails')
+      this.$emit('openDetails', this.weatherData[0].name)
     }
   }
 }
@@ -81,6 +82,7 @@ export default {
     }
 
     &-title {
+      padding: 7px 24px!important;
       color: #5f6368;
     }
 
@@ -98,8 +100,8 @@ export default {
       align-items: center;
 
       img {
-        width: 120px;
-        height: 120px;
+        width: 90px;
+        height: 90px;
       }
     }
   }

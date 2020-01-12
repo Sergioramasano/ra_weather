@@ -3,14 +3,21 @@
     class="home container-fluid"
     :style="{ 'background-image': `url(${require('../assets/sky.jpeg')})`}"
   >
+    <template v-if="!detalization">
+    <addCity/>
     <div class="row p-2">
       <card
-        v-if="!detalization"
+        @openDetails="openDetails"
         @reload="reloadCityWeather"
-        @emitOpenDetails="openDetails"
-        :cities="cities"
+        :weatherData="weatherData"
       />
-      <detail :cityName="cityName" v-else/>
+    </div>
+    </template>
+    <div
+      v-else
+      class="row p-2"
+    >
+      <detail :cityName="cityName" />
     </div>
   </section>
 </template>
@@ -18,37 +25,60 @@
 <script>
 import card from '@/components/card.vue'
 import detail from '@/components/detail.vue'
+import addCity from '@/components/addCity.vue'
 
 export default {
   name: 'home',
-  components: { card, detail },
+  components: {
+    card, detail, addCity
+  },
   data: () => ({
-    cities: [],
-    cityName: 'Cherkasy',
-    detalization: false
+    cityName: '',
+    lat: '',
+    lon: ''
   }),
+  computed: {
+    weatherData () {
+      return this.$store.state.weatherData
+    },
+    detalization () {
+      return this.$store.getters.getIsOpenDetails
+    }
+  },
   methods: {
-    getCities () {
+    getWeatherByCityName () {
       this.axios
-        .get(`http://api.openweathermap.org/data/2.5/weather?q=${this.cityName}&APPID=89131358011ec8066582be44f133475a&lang=ua`)
+        .get(`http://api.openweathermap.org/data/2.5/weather?q=${this.cityName}&APPID=89131358011ec8066582be44f133475a&lang=ru`)
         .then(response => {
-          this.cities.push(response.data)
+          this.$store.commit('setWeather', response.data)
+        })
+    },
+    getWeatherByGeo () {
+      this.axios
+        .get(`http://api.openweathermap.org/data/2.5/weather?lat=${this.lat}&lon=${this.lon}&APPID=89131358011ec8066582be44f133475a&lang=ru`)
+        .then(response => {
+          this.$store.commit('setWeather', response.data)
         })
     },
     openDetails (name) {
       this.cityName = name
-      this.detalization = true
+    },
+    setLocation (position) {
+      this.lat = position.coords.latitude
+      this.lon = position.coords.longitude
+      this.getWeatherByGeo()
     },
     getUserLocation () {
-
+      navigator.geolocation.watchPosition(this.setLocation)
     },
     reloadCityWeather (name) {
       this.cityName = name
-      this.getCities()
+      this.getWeatherByCityName()
     }
   },
   created () {
-    this.getCities()
+    this.getUserLocation()
+    // this.getWeatherByCityName()
   }
 }
 </script>
@@ -59,5 +89,9 @@ export default {
     overflov-y: auto;
     background-size: 100% 100%;
     background-repeat: no-repeat;
+
+    #last_name {
+      color: white;
+    }
   }
 </style>

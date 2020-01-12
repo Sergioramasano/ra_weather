@@ -1,15 +1,37 @@
 <template>
   <main id="app">
     <nav
-      v-if="false"
+      v-if="detalization"
       id="nav"
       class="grey accent-4"
+      @click="closeDetails"
     >
-      <router-link to="/">Home</router-link>
+      <router-link
+        to="/">
+        Home
+      </router-link>
     </nav>
     <router-view/>
   </main>
 </template>
+<script>
+export default {
+  data: () => ({
+  }),
+  computed: {
+    detalization () {
+      return this.$store.getters.getIsOpenDetails
+    }
+  },
+  methods: {
+    closeDetails () {
+      console.log(1)
+      this.$store.commit('emitCloseDetails')
+    }
+  }
+}
+</script>
+
 <style lang="scss">
   @import '~materialize-css/dist/css/materialize.min.css';
 
@@ -71,5 +93,8 @@
   }
   .mb-1 {
     margin-bottom: 1rem;
+  }
+  .ml-2{
+    margin-left: 2rem;
   }
 </style>
