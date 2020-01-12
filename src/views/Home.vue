@@ -54,6 +54,8 @@ export default {
         .get(`http://api.openweathermap.org/data/2.5/weather?q=${this.cityName}&APPID=89131358011ec8066582be44f133475a&lang=ru`)
         .then(response => {
           this.$store.commit('setWeather', response.data)
+          localStorage.clear()
+          localStorage.setItem('array', JSON.stringify(this.weatherData))
         })
     },
     reloadWeatherByCityName (i) {
@@ -61,8 +63,6 @@ export default {
         .get(`http://api.openweathermap.org/data/2.5/weather?q=${this.cityName}&APPID=89131358011ec8066582be44f133475a&lang=ru`)
         .then(response => {
           this.$store.commit('changeWeather', [response.data, i])
-        }).then(() => {
-          this.writeToStorage()
         })
     },
     getWeatherByGeo () {
@@ -90,29 +90,18 @@ export default {
     addCity (city) {
       this.cityName = city
       this.getWeatherByCityName()
-      console.log(this.weatherData)
-    },
-    writeToStorage () {
-      localStorage.clear()
-      let cities = JSON.stringify(this.weatherData)
-      console.log('sss', cities)
-      localStorage.setItem('cities', cities)
-    }
-  },
-  beforeCreate () {
-    this.$store.commit('emitDeleteWeatherData')
-    if (localStorage.getItem('cities')) {
-      let cities = JSON.parse(localStorage.getItem('cities'))
-      console.log('bef', cities)
-      this.$store.commit('setLocalStorageData', cities)
     }
   },
   created () {
-    this.getUserLocation()
-    // this.getWeatherByCityName()
+    if (localStorage.getItem('array')) {
+      this.$store.commit('setLocalStorageData', JSON.parse(localStorage.getItem('array')))
+    } else {
+      this.getUserLocation()
+    }
+    localStorage.clear()
   },
   beforeDestroy () {
-    this.writeToStorage()
+    localStorage.setItem('array', JSON.stringify(this.weatherData))
   }
 }
 </script>

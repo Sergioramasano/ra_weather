@@ -63,6 +63,7 @@ export default {
     },
     deleteCity (index) {
       this.$store.commit('deleteCity', index)
+      localStorage.setItem('array', JSON.stringify(this.weatherData))
     },
     emitOpenDetails () {
       this.$store.commit('emitOpenDetails')

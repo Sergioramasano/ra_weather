@@ -117,7 +117,7 @@ export default {
     background: #555;
   }
   .page-enter-active, .page-leave-active {
-    transition: opacity .5s;
+    transition: opacity 2s;
   }
   .page-enter, .page-leave-active {
     opacity: 0;
