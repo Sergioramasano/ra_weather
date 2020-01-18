@@ -1,107 +1,83 @@
 <template>
-  <section
-    class="home container-fluid"
-    :style="{ 'background-image': `url(${require('../assets/sky.jpeg')})`}"
-  >
-    <template v-if="!detalization">
-    <addCity @addCity="addCity"/>
-    <div class="row p-2 cards">
-      <card
-        v-for="(item, i) of weatherData"
-        :key="item.name"
-        @openDetails="openDetails"
-        @reload="reloadCityWeather"
-        :index="i"
-        :weatherData="weatherData"
-      />
-    </div>
-    </template>
-    <div
-      v-else
-      class="row p-2"
-    >
-      <detail :cityName="cityName" />
-    </div>
-  </section>
+  <div>
+      <template v-if="readyState">
+        <router-link
+          to="cities"
+          class="btn waves-effect waves-light mt-2"
+        >
+          more cities
+        </router-link>
+        <div
+
+          class="row p-2 cards"
+        >
+          <card
+            v-for="(item, i) of weatherData"
+            :key="item.id"
+            @openDetails="openDetails(item)"
+            @reload="reloadCityWeather"
+            :index="+i"
+            :weatherData="weatherData"
+          />
+        </div>
+      </template>
+    <loader v-if="!readyState"/>
+  </div>
 </template>
 
 <script>
 import card from '@/components/card.vue'
-import detail from '@/components/detail.vue'
-import addCity from '@/components/addCity.vue'
+import loader from '@/components/loader.vue'
 
 export default {
   name: 'home',
   components: {
-    card, detail, addCity
+    card,
+    loader
   },
   data: () => ({
-    cityName: '',
     lat: '',
-    lon: ''
+    lon: '',
+    flag: false
   }),
   computed: {
-    weatherData () {
-      return this.$store.state.weatherData
-    },
     detalization () {
       return this.$store.getters.getIsOpenDetails
+    },
+    cityName () {
+      return this.$store.getters.getCityName
+    },
+    weatherData () {
+      return this.$store.getters.getGeoData
+    },
+    readyState () {
+      return this.$store.getters.isStateReady
     }
   },
   methods: {
-    getWeatherByCityName () {
-      this.axios
-        .get(`http://api.openweathermap.org/data/2.5/weather?q=${this.cityName}&APPID=89131358011ec8066582be44f133475a&lang=ru`)
-        .then(response => {
-          this.$store.commit('setWeather', response.data)
-          localStorage.clear()
-          localStorage.setItem('array', JSON.stringify(this.weatherData))
-        })
-    },
-    reloadWeatherByCityName (i) {
-      this.axios
-        .get(`http://api.openweathermap.org/data/2.5/weather?q=${this.cityName}&APPID=89131358011ec8066582be44f133475a&lang=ru`)
-        .then(response => {
-          this.$store.commit('changeWeather', [response.data, i])
-        })
-    },
-    getWeatherByGeo () {
-      this.axios
-        .get(`http://api.openweathermap.org/data/2.5/weather?lat=${this.lat}&lon=${this.lon}&APPID=89131358011ec8066582be44f133475a&lang=ru`)
-        .then(response => {
-          this.$store.commit('setWeather', response.data)
-        })
-    },
-    openDetails (name) {
-      this.cityName = name
+    openDetails (city) {
+      let a = city.id
+      let b = city.name
+      this.$router.push({ path: `/cities/${a}`, query: { cityName: b } })
     },
     setLocation (position) {
-      this.lat = position.coords.latitude
-      this.lon = position.coords.longitude
-      this.getWeatherByGeo()
+      let lat = position.coords.latitude
+      let lon = position.coords.longitude
+      this.$store.dispatch('getWeatherByGeo', { lat, lon })
     },
     getUserLocation () {
-      navigator.geolocation.watchPosition(this.setLocation)
+      navigator.geolocation.getCurrentPosition(this.setLocation)
     },
     reloadCityWeather (data) {
-      this.cityName = data[0]
-      this.reloadWeatherByCityName(data[1])
-    },
-    addCity (city) {
-      this.cityName = city
-      this.getWeatherByCityName()
+      console.log(data)
+      this.$store.commit('SET_CITY_NAME', data[0])
+      this.$store.dispatch('reloadWeatherByCityName', data[0])
     }
   },
-  created () {
-    if (localStorage.getItem('array')) {
-      this.$store.commit('setLocalStorageData', JSON.parse(localStorage.getItem('array')))
-    } else {
+  mounted () {
+    setTimeout(() => {
       this.getUserLocation()
-    }
-    localStorage.clear()
-  },
-  beforeDestroy () {
-    localStorage.setItem('array', JSON.stringify(this.weatherData))
+    }, 3000)
   }
 }
 </script>
@@ -112,10 +88,17 @@ export default {
     overflov-y: auto;
     background-size: 100% 100%;
     background-repeat: no-repeat;
-    .cards{
+
+    .cards {
       height: 500px;
       padding-bottom: 100px;
       overflow-y: auto;
     }
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
   }
 </style>

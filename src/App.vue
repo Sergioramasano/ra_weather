@@ -1,9 +1,13 @@
 <template>
-  <main id="app">
+  <main
+    id="app"
+    class="cities container-fluid"
+    :style="{ 'background-image': `url(${require('./assets/sky.jpeg')})`}"
+  >
     <nav
-      v-if="detalization"
+      v-if="home"
       id="nav"
-      class="grey accent-4"
+      class="cyan accent-4"
       @click="closeDetails"
     >
       <router-link
@@ -11,27 +15,25 @@
         Home
       </router-link>
     </nav>
-    <router-view/>
+    <transition name="rout" mode="out-in">
+      <router-view/>
+    </transition>
   </main>
 </template>
 <script>
 export default {
-  data: () => ({
-  }),
   computed: {
-    detalization () {
-      return this.$store.getters.getIsOpenDetails
+    home () {
+      return this.$route.path !== '/'
     }
   },
   methods: {
     closeDetails () {
-      console.log(1)
-      this.$store.commit('emitCloseDetails')
+      this.$router.push('/')
     }
   }
 }
 </script>
-
 <style lang="scss">
   @import '~materialize-css/dist/css/materialize.min.css';
 
@@ -52,7 +54,12 @@ export default {
     justify-content: stretch;
     width: 100%;
     height: 100vh;
-    overflow:hidden;
+    flex-grow: 1;
+    color: black;
+    overflov-y: auto;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    overflow: hidden;
 
     #nav {
       display: flex;
@@ -76,7 +83,9 @@ export default {
   .p-2 {
     padding: 2rem;
   }
-
+  .pt-0 {
+    padding-top: 0;
+  }
   .p-3 {
     padding: 3rem;
   }
@@ -88,15 +97,19 @@ export default {
   .mt-2 {
     margin-top: 2rem;
   }
+
   .mb-2 {
     margin-bottom: 2rem;
   }
+
   .mb-1 {
     margin-bottom: 1rem;
   }
-  .ml-2{
+
+  .ml-2 {
     margin-left: 2rem;
   }
+
   /* width */
   ::-webkit-scrollbar {
     width: 10px;
@@ -116,10 +129,17 @@ export default {
   ::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
-  .page-enter-active, .page-leave-active {
-    transition: opacity 2s;
+
+  .rout-enter-active {
+    transition: all .5s ease;
   }
-  .page-enter, .page-leave-active {
+
+  .rout-leave-active {
+    transition: all 1s ease;
+  }
+
+  .rout-enter, .rout-leave-to {
+    transform: translateX(100px);
     opacity: 0;
   }
 </style>
