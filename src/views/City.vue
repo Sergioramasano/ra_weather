@@ -4,37 +4,38 @@
        >
     <div class="card">
       <div class="card-image blue">
-        <img :src="`http://openweathermap.org/img/wn/${this.weatherData[0].weather[0].icon}@2x.png`" alt="weatherIcon">
-        <span class="card-title">{{weatherData[0].name}} | {{weatherData[0].sys.country}}</span>
+        <img :src="`http://openweathermap.org/img/wn/${weatherData[index].weather[0].icon}@2x.png`"
+             alt="weatherIcon">
+        <span class="card-title">{{weatherData[index].name}} | {{weatherData[index].sys.country}}</span>
       </div>
       <div class="card-content">
         <p>
           <span>Описание:</span>
-          <b>{{weatherData[0].weather[0].description}}</b>
+          <b>{{weatherData[index].weather[0].description}}</b>
         </p>
         <p>
           <span>Температура:</span>
-          <b>{{Math.ceil(weatherData[0].main.temp - 273)}}℃</b>
+          <b>{{Math.ceil(weatherData[index].main.temp - 273)}}℃</b>
         </p>
         <p>
           <span>Ощущение:</span>
-          <b>{{Math.ceil(weatherData[0].main.feels_like - 273)}}℃</b>
+          <b>{{Math.ceil(weatherData[index].main.feels_like - 273)}}℃</b>
         </p>
         <p>
           <span>Минимальная t:</span>
-          <b>{{Math.ceil(weatherData[0].main.temp_min-273)}}℃</b>
+          <b>{{Math.ceil(weatherData[index].main.temp_min-273)}}℃</b>
         </p>
         <p>
           <span>Максимальная t:</span>
-          <b>{{Math.ceil(weatherData[0].main.temp_max-273)}}℃</b>
+          <b>{{Math.ceil(weatherData[index].main.temp_max-273)}}℃</b>
         </p>
         <p>
           <span>Скорость ветра:</span>
-          <b>{{Math.ceil(weatherData[0].wind.speed)}}m/s</b>
+          <b>{{Math.ceil(weatherData[index].wind.speed)}}m/s</b>
         </p>
         <p>
           <span>Угол ветра:</span>
-          <b>{{Math.ceil(weatherData[0].wind.deg)}}deg</b>
+          <b>{{Math.ceil(weatherData[index].wind.deg)}}deg</b>
         </p>
       </div>
     </div>
@@ -45,25 +46,29 @@
 export default {
   name: 'city',
   data: () => ({
-    query: '',
-    iconUrl: ''
+    iconUrl: '',
+    weatherData: []
   }),
   computed: {
-    weatherData () {
-      return this.$store.getters.getGeoData
-    }
-  },
-  methods: {
-    getQueryParam () {
-      this.query = this.$route.query.cityName
+    weather () {
+      return this.$store.getters.getWeather
     },
-    dispatchGetCityByName () {
-      this.$store.dispatch('getWeatherByCityName', this.query)
+    geoData () {
+      return this.$store.getters.getGeoData
+    },
+    index () {
+      return this.$store.getters.getCityIndex
+    },
+    isDetailsFromHome () {
+      return this.$store.getters.isDetailsFromHome
     }
   },
   created () {
-    this.getQueryParam()
-    this.dispatchGetCityByName()
+    if (this.isDetailsFromHome === true) {
+      this.weatherData = this.geoData
+    } else {
+      this.weatherData = this.weather
+    }
   }
 }
 </script>

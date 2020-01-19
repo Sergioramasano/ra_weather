@@ -5,9 +5,9 @@
       <card
         v-for="(item, i) of weatherData"
         :key="item.name"
-        @openDetails="openDetails(item)"
+        @openDetails="openDetails(item, i)"
         @reload="reloadCityWeather"
-        :index="i"
+        :index="+i"
         :weatherData="weatherData"
       />
     </div>
@@ -39,10 +39,9 @@ export default {
     }
   },
   methods: {
-    getWeatherByCityName () {
-
-    },
-    openDetails (city) {
+    openDetails (city, i) {
+      this.$store.commit('SET_INDEX', i)
+      this.$store.commit('SET_FROM_HOME', false)
       let a = city.id
       let b = city.name
       this.$router.push({ path: `/cities/${a}`, query: { cityName: b } })
@@ -50,6 +49,10 @@ export default {
     addCity (city) {
       this.$store.dispatch('getWeatherByCityName', city)
       localStorage.setItem('array', JSON.stringify(this.weatherData))
+    },
+    reloadCityWeather (data) {
+      this.$store.commit('SET_CITY_NAME', data[0])
+      this.$store.dispatch('reloadWeatherByCityName', data[0])
     }
   },
   created () {

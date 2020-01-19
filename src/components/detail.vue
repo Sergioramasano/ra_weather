@@ -56,7 +56,6 @@ export default {
       this.axios
         .get(`http://api.openweathermap.org/data/2.5/weather?q=${this.cityName}&APPID=89131358011ec8066582be44f133475a&lang=ru`)
         .then(response => {
-          console.log(22)
           this.weatherData.push(response.data)
         })
     },

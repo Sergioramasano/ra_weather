@@ -3,6 +3,7 @@
     <div class="card">
       <div class="card-image blue">
         <a
+          v-if="!unclose"
           @click.prevent="deleteCity(index)"
           class="closer"
         >
@@ -37,7 +38,7 @@
           </p>
         </div>
         <a
-          @click="emitOpenDetails"
+          @click="emitOpenDetails(index)"
           class="waves-effect waves-light btn-small more"
         >
           Подробнее...
@@ -52,7 +53,8 @@ export default {
   name: 'card',
   props: {
     index: Number,
-    weatherData: Array
+    weatherData: Array,
+    unclose: Boolean
   },
   data: () => ({
     iconUrl: ''
@@ -62,12 +64,12 @@ export default {
       this.$emit('reload', [name, index])
     },
     deleteCity (index) {
-      this.$store.commit('deleteCity', index)
+      this.$store.commit('DELETE_CITY', index)
       localStorage.setItem('array', JSON.stringify(this.weatherData))
     },
     emitOpenDetails () {
-      this.$store.commit('emitOpenDetails')
-      this.$emit('openDetails', this.weatherData[this.index].name)
+      this.$emit('openDetails', this.weatherData[this.index])
+      this.$store.commit('SET_INDEX', this.index)
     }
   }
 }
