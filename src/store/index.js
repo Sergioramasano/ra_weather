@@ -66,26 +66,24 @@ export default new Vuex.Store({
     }
   },
   getters:
-{
-  getWeather (state) {
-    return state.weatherData
-  },
-  getGeoData (state) {
-    return state.geoData
-  },
-  getCityName (state) {
-    return state.cityName
-  },
-  getCityIndex (state) {
-    return state.index
-  },
-  isStateReady (state) {
-    return state.isStateReady
-  },
-  isDetailsFromHome (state) {
-    return state.isDetailsFromHome
-  }
-},
-  modules: {
-  }
+    {
+      getWeather (state) {
+        return state.weatherData
+      },
+      getGeoData (state) {
+        return state.geoData
+      },
+      getCityName (state) {
+        return state.cityName
+      },
+      getCityIndex (state) {
+        return state.index
+      },
+      isStateReady (state) {
+        return state.isStateReady
+      },
+      isDetailsFromHome (state) {
+        return state.isDetailsFromHome
+      }
+    }
 })

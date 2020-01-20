@@ -26,15 +26,15 @@
           </p>
           <p>
             <span>Температура.:</span>
-            <b>{{Math.ceil(weatherData[index].main.temp - 273)}}℃</b>
+            <b>{{weatherData[index].main.temp | termo}}</b>
           </p>
           <p>
             <span>Минимальная t:</span>
-            <b>{{Math.ceil(weatherData[index].main.temp_min-273)}}℃</b>
+            <b>{{weatherData[index].main.temp_min | termo}}</b>
           </p>
           <p>
             <span>Максимальная t:</span>
-            <b>{{Math.ceil(weatherData[index].main.temp_max-273)}}℃</b>
+            <b>{{weatherData[index].main.temp_max | termo }}</b>
           </p>
         </div>
         <a

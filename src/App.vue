@@ -11,12 +11,16 @@
       @click="closeDetails"
     >
       <router-link
-        to="/">
-        Home
+        to="/"
+        class="home-link"
+      >
+        &#8617;
       </router-link>
     </nav>
     <transition name="rout" mode="out-in">
-      <router-view/>
+      <router-view
+        class="view"
+      />
     </transition>
   </main>
 </template>
@@ -65,6 +69,10 @@ export default {
       display: flex;
       padding-left: 20px;
 
+      .home-link {
+        font-size: 32px;
+      }
+
       a {
         font-weight: bold;
 
@@ -83,9 +91,11 @@ export default {
   .p-2 {
     padding: 2rem;
   }
+
   .pt-0 {
     padding-top: 0;
   }
+
   .p-3 {
     padding: 3rem;
   }

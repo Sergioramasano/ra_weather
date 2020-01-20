@@ -1,7 +1,5 @@
 <template>
-  <div class="col s12 card-wrapper"
-       :style="{ 'background-image': `url(${require('../assets/sky.jpeg')})`}"
-       >
+  <div class="col s12 card-wrapper">
     <div class="card">
       <div class="card-image blue">
         <img :src="`http://openweathermap.org/img/wn/${weatherData[index].weather[0].icon}@2x.png`"
@@ -15,19 +13,19 @@
         </p>
         <p>
           <span>Температура:</span>
-          <b>{{Math.ceil(weatherData[index].main.temp - 273)}}℃</b>
+          <b>{{weatherData[index].main.temp | termo}}</b>
         </p>
         <p>
           <span>Ощущение:</span>
-          <b>{{Math.ceil(weatherData[index].main.feels_like - 273)}}℃</b>
+          <b>{{ weatherData[index].main.feels_like | termo}}</b>
         </p>
         <p>
           <span>Минимальная t:</span>
-          <b>{{Math.ceil(weatherData[index].main.temp_min-273)}}℃</b>
+          <b>{{ weatherData[index].main.temp_min | termo}}</b>
         </p>
         <p>
           <span>Максимальная t:</span>
-          <b>{{Math.ceil(weatherData[index].main.temp_max-273)}}℃</b>
+          <b>{{weatherData[index].main.temp_max | termo}}</b>
         </p>
         <p>
           <span>Скорость ветра:</span>
@@ -64,22 +62,15 @@ export default {
     }
   },
   created () {
-    if (this.isDetailsFromHome === true) {
-      this.weatherData = this.geoData
-    } else {
-      this.weatherData = this.weather
-    }
+    this.isDetailsFromHome
+      ? this.weatherData = this.geoData
+      : this.weatherData = this.weather
   }
 }
 </script>
 
 <style scoped lang="scss">
-  .card-wrapper{
-    flex-grow: 1;
-    color: black;
-    overflov-y: auto;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
+  .card-wrapper {
     .card {
       text-align: left;
 
@@ -100,7 +91,7 @@ export default {
       }
 
       &-title {
-        padding: 7px 24px!important;
+        padding: 7px 24px !important;
         color: #5f6368;
       }
 

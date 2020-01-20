@@ -79,12 +79,6 @@ export default {
 </script>
 <style scoped lang="scss">
   .home {
-    flex-grow: 1;
-    color: black;
-    overflov-y: auto;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-
     .cards {
       height: 500px;
       padding-bottom: 100px;
